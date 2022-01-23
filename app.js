@@ -1,6 +1,20 @@
 const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
+const {DB_HOST} = require('./config')
+
+const mongoose = require('mongoose')
+
+
+mongoose.connect(DB_HOST, {
+    useNewUrlParser:true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log("Database connection successful")
+}).catch(error => {
+    console.log(error.message);
+})
+
 
 
 const contactsRouter = require('./routes/api/contacts')
