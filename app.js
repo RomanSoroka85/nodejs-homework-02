@@ -1,17 +1,14 @@
 const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
+const router = require("./routes/api/contacts");
+const app = express();
+const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 const { DB_HOST } = require("./config");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-const router = require("./routes/api/contacts");
 const { Contact } = require("./models");
 dotenv.config();
-
-const newContact = {
-  name: "Roman",
-  email: "r@gov.ua",
-};
 
 mongoose
   .connect(DB_HOST, {
@@ -19,16 +16,21 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(async () => {
-    const result = await Contact.create(newContact);
-    console.log(result);
+    await Contact.create();
+  })
+  .then(async (id) => {
+    await Contact.findByIdAndUpdate(id);
+  })
+  .then(async (id) => {
+    await Contact.findById(id);
+  })
+  .then(async (id) => {
+    await Contact.findByIdAndDelete(id);
   })
   .catch((error) => {
     console.log(error.message);
     process.exit(1);
   });
-
-const app = express();
-const formatsLogger = app.get("env") === "development" ? "dev" : "short";
 
 app.use(logger(formatsLogger));
 app.use(cors());

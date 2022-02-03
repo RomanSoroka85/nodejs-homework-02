@@ -1,6 +1,6 @@
 const express = require("express");
 const { controllerWrapper, validation } = require("../../middlewares");
-const { joiSchema } = require("../../schemas");
+const { joiSchema } = require("../../models/contact");
 const {
   listContacts,
   getContactById,
@@ -12,9 +12,17 @@ const {
 const router = express.Router();
 
 router.get("/", controllerWrapper(listContacts));
-router.get("/:contactId", controllerWrapper(getContactById));
+router.get(
+  "/:contactId",
+  validation(joiSchema),
+  controllerWrapper(getContactById)
+);
 router.post("/", validation(joiSchema), controllerWrapper(addContact));
-router.delete("/:contactId", controllerWrapper(removeContact));
+router.delete(
+  "/:contactId",
+  validation(joiSchema),
+  controllerWrapper(removeContact)
+);
 router.put(
   "/:contactId",
   validation(joiSchema),
