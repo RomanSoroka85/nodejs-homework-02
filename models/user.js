@@ -28,6 +28,10 @@ const userSchema = Schema(
       type: String,
       default: null,
     },
+    avaterURL: {
+      type: String,
+      default: "",
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "user",

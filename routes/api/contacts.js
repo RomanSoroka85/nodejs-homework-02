@@ -9,7 +9,7 @@ const {
   removeContact,
   updateStatusContact,
 } = require("../../controllers");
-const { autenticate } = require("../../middlewares/autenticate");
+const { authenticate } = require("../../middlewares");
 const router = express.Router();
 
 router.get("/", controllerWrapper(listContacts));
@@ -20,25 +20,25 @@ router.get(
 );
 router.post(
   "/",
-  autenticate,
+  authenticate,
   validation(joiSchema),
   controllerWrapper(addContact)
 );
 router.delete(
   "/:contactId",
-  autenticate,
+  authenticate,
   validation(joiSchema),
   controllerWrapper(removeContact)
 );
 router.put(
   "/:contactId",
-  autenticate,
+  authenticate,
   validation(joiSchema),
   controllerWrapper(updateContact)
 );
 router.patch(
   "/:contactId/favorite",
-  autenticate,
+  authenticate,
   controllerWrapper(updateStatusContact)
 );
 
