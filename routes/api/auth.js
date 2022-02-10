@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const { autenticate } = require("../../middlewares/autenticate");
+const { authenticate } = require("../../middlewares");
+const gravatar = require("gravatar");
 const router = express.Router();
 const {
   User,
@@ -25,7 +26,13 @@ router.post("/register", async (req, res, next) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-    const newUser = await User.create({ name, email, password: hashPassword });
+    const avatarURL = await gravatar.url(email);
+    const newUser = await User.create({
+      name,
+      email,
+      avatarURL,
+      password: hashPassword,
+    });
     res.status(201).json({ email, name });
   } catch (error) {
     next(error);
@@ -60,7 +67,7 @@ router.post("/login", async (req, res, next) => {
   }
 });
 
-router.get("/logout", autenticate, async (req, res, next) => {
+router.get("/logout", authenticate, async (req, res, next) => {
   try {
     await User.findByIdAndUpdate(req.body._id, { token: null });
     res.status(204).send();
