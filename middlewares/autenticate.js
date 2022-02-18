@@ -24,4 +24,4 @@ const autenticate = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { autenticate };
+module.exports = autenticate;

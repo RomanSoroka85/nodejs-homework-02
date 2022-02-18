@@ -1,5 +1,5 @@
 const { NotFound, Unauthorized } = require("http-errors");
-const { Contact } = require("../models");
+const { Contact } = require("../../models");
 
 const listContacts = async (req, res, next) => {
   try {

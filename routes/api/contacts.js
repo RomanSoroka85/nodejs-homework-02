@@ -1,5 +1,9 @@
 const express = require("express");
-const { controllerWrapper, validation } = require("../../middlewares");
+const {
+  controllerWrapper,
+  validation,
+  autenticate,
+} = require("../../middlewares");
 const { joiSchema } = require("../../models/contact");
 const {
   listContacts,
@@ -8,8 +12,8 @@ const {
   updateContact,
   removeContact,
   updateStatusContact,
-} = require("../../controllers");
-const { autenticate } = require("../../middlewares/autenticate");
+} = require("../../controllers/contacts");
+
 const router = express.Router();
 
 router.get("/", controllerWrapper(listContacts));

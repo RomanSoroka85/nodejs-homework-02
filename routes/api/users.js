@@ -1,6 +1,7 @@
 const express = require("express");
-const { autenticate } = require("../../middlewares/autenticate");
+const { autenticate } = require("../../middlewares");
 const router = express.Router();
+
 router.get("/current", autenticate, async (req, res, next) => {
   try {
     const { email, name } = req.user;
