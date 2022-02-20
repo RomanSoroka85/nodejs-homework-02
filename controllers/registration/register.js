@@ -1,8 +1,9 @@
 const { BadRequest, Conflict } = require("http-errors");
-const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const { SITE_NAME } = process.env;
 const { User, joiRegisterSchema } = require("../../models/user");
 const bcrypt = require("bcryptjs");
+const msg = require("../../helpers");
+const { nanoid } = require("nanoid");
 
 const register = async (req, res, next) => {
   try {
@@ -15,16 +16,22 @@ const register = async (req, res, next) => {
     if (user) {
       throw new Conflict("Already exist");
     }
-    const msg = {
-      to: email,
-      from: "patriotroma9@gmail.com",
-      subject: "Sending with Twilio SendGrid is Fun",
-      text: "and easy to do anywhere, even with Node.js",
-      html: "<strong>and easy to do anywhere, even with Node.js</strong>",
-    };
+
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
-    await User.create({ name, email, password: hashPassword });
+    const verificationToken = nanoid();
+    const newUser = await User.create({
+      name,
+      email,
+      verificationToken,
+      password: hashPassword,
+    });
+    const mail = {
+      to: email,
+      subject: "Verification email",
+      html: `<a target = "_blank" href="${SITE_NAME}/api/users/verify/${verificationToken}">Verified you're email</a>`,
+    };
+    await msg(mail);
     res.status(201).json({ email, name });
   } catch (error) {
     next(error);
